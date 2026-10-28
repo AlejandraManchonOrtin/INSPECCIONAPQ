@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora RAPQ & Guía de Inspección - RD 656/2017</title>
+<!-- Tesseract.js para OCR local en el navegador -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<style>
+  :root {
+    --primary: #0f2d59;
+    --primary-light: #1e4b8a;
+    --accent: #0284c7;
+    --success: #16a34a;
+    --warning: #d97706;
+    --danger: #dc2626;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --border: #cbd5e1;
+    --text: #1e293b;
+    --text-muted: #64748b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    padding: 12px;
+    font-size: 14px;
+  }
+  .app-container { max-width: 1200px; margin: 0 auto; }
+  
+  /* Header */
+  header {
+    background: linear-gradient(135deg, #0f2d59, #1e3a8a);
+    color: #fff;
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  header h1 { font-size: 1.25rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+  header .subtitle { font-size: 0.8rem; color: #cbd5e1; }
+  .badge-legal {
+    background: #0284c7;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  /* Pestañas */
+  .nav-tabs {
+    display: flex;
+    gap: 6px;
+    background: #e2e8f0;
+    padding: 6px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+  .nav-tab-btn {
+    flex: 1;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-muted);
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .nav-tab-btn.active {
+    background: #ffffff;
+    color: var(--primary);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+  }
+
+  /* Contenido */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  }
+  .card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--primary);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Form controls */
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .form-group { display: flex; flex-direction: column; gap: 4px; }
+  label { font-size: 0.78rem; font-weight: 700; color: #334155; }
+  input, select, textarea {
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    background: #fff;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(2,132,199,0.15);
+  }
+  .input-hint { font-size: 0.7rem; color: var(--text-muted); }
+
+  /* Tablas */
+  .table-responsive { width: 100%; overflow-x: auto; margin-bottom: 12px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    text-align: left;
+  }
+  th, td {
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+  }
+  th { background: #f1f5f9; color: var(--primary); font-weight: 700; white-space: nowrap; }
+  tbody tr:hover { background: #f8fafc; }
+
+  /* Botones */
+  .btn-group { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .btn {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.15s;
+    text-decoration: none;
+  }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover { background: var(--primary-light); }
+  .btn-accent { background: var(--accent); color: #fff; }
+  .btn-accent:hover { background: #0369a1; }
+  .btn-success { background: var(--success); color: #fff; }
+  .btn-success:hover { background: #15803d; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-danger:hover { background: #b91c1c; }
+  .btn-secondary { background: #64748b; color: #fff; }
+  .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  .btn-outline:hover { background: #e2e8f0; }
+
+  /* Resultados y Banners */
+  .banner {
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 14px;
+    font-size: 0.85rem;
+    border-left: 4px solid;
+  }
+  .banner-info { background: #e0f2fe; border-color: #0284c7; color: #0369a1; }
+  .banner-warning { background: #fef3c7; border-color: #d97706; color: #92400e; }
+  .banner-danger { background: #fee2e2; border-color: #dc2626; color: #991b1b; }
+  .banner-success { background: #dcfce7; border-color: #16a34a; color: #166534; }
+
+  /* Indicadores R */
+  .r-pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.75rem;
+  }
+  .r-green { background: #dcfce7; color: #15803d; }
+  .r-yellow { background: #fef3c7; color: #b45309; }
+  .r-red { background: #fee2e2; color: #b91c1c; }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 23, 42, 0.7);
+    display: none; align-items: center; justify-content: center;
+    z-index: 999; padding: 12px;
+  }
+  .modal-box {
+    background: #fff; border-radius: 8px; max-width: 650px; width: 100%;
+    max-height: 90vh; overflow-y: auto; padding: 20px;
+  }
+
+  /* Checklist Fichas */
+  .check-item {
+    padding: 10px;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+  }
+  .check-item:nth-child(even) { background: #fbfcfe; }
+  .check-status-group { display: flex; gap: 4px; }
+  .status-btn {
+    padding: 4px 8px; font-size: 0.72rem; font-weight: 700; border: 1px solid var(--border);
+    border-radius: 4px; background: #fff; cursor: pointer;
+  }
+  .status-btn.selected-C { background: #16a34a; color: #fff; border-color: #16a34a; }
+  .status-btn.selected-NC { background: #dc2626; color: #fff; border-color: #dc2626; }
+  .status-btn.selected-NA { background: #64748b; color: #fff; border-color: #64748b; }
+  .status-btn.selected-P { background: #d97706; color: #fff; border-color: #d97706; }
+
+  /* Impresión */
+  @media print {
+    body { padding: 0; background: #fff; font-size: 11pt; }
+    .nav-tabs, .btn, .no-print, .modal-overlay { display: none !important; }
+    .tab-content { display: block !important; }
+    .card { border: 1px solid #ccc; box-shadow: none; page-break-inside: avoid; margin-bottom: 12px; }
+    header { background: #0f2d59 !important; color: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  <header>
+    <div>
+      <h1>Calculadora RAPQ & Guía Inspector Propio</h1>
+      <div class="subtitle">Evaluación RD 656/2017 & ITC APQ-1 a APQ-10 | Modo Persistente IndexedDB</div>
+    </div>
+    <div style="display: flex; gap: 8px; align-items: center;">
+      <span class="badge-legal">Persistencia Total Activada</span>
+      <button class="btn btn-outline" style="color: white; border-color: rgba(255,255,255,0.4);" onclick="mostrarFuentesLegales()">📚 Fuentes</button>
+    </div>
+  </header>
+
+  <!-- Pestañas Principales -->
+  <div class="nav-tabs">
+    <button class="nav-tab-btn active" id="tabBtnCalc" onclick="switchTab('tabCalc')">📊 A. Calculadora RAPQ</button>
+    <button class="nav-tab-btn" id="tabBtnInsp" onclick="switchTab('tabInsp')">🔍 B. Revisión Inspector Propio</button>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- PESTAÑA A: CALCULADORA RAPQ               -->
+  <!-- ========================================== -->
+  <div id="tabCalc" class="tab-content active">
+    
+    <!-- Bloque 1: Almacenamiento -->
+    <div class="card">
+      <div class="card-title">1. Datos del Almacenamiento</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="almacen_id">Identificador / Nombre del Almacén:</label>
+          <input type="text" id="almacen_id" placeholder="Ej. Almacén Central Químicos Nave 4">
+        </div>
+        <div class="form-group">
+          <label for="almacen_modo">Régimen de Productos:</label>
+          <select id="almacen_modo">
+            <option value="multi">Varios productos (Regla de Adición Art. 2)</option>
+            <option value="mono">Producto único</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="almacen_recipiente">Tipo de Recipiente Predominante:</label>
+          <select id="almacen_recipiente" onchange="actualizarOrientacionITC()">
+            <option value="fijo">Recipientes Fijos (Tanques, Depósitos fijos)</option>
+            <option value="movil">Recipientes Móviles (GRG, Bidones, Garrafas, Botellas)</option>
+            <option value="gas">Gases a Presión / Licuados / Disueltos</option>
+            <option value="mixto">Mixto / No determinado</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="almacen_itc_ref">ITC Específica Asignada (si se conoce):</label>
+          <select id="almacen_itc_ref">
+            <option value="auto">No indicada / No lo sé (Orientación preliminar)</option>
+            <option value="APQ-1">ITC APQ-1: Líquidos inflamables y combustibles (Fijos)</option>
+            <option value="APQ-2">ITC APQ-2: Óxido de etileno</option>
+            <option value="APQ-3">ITC APQ-3: Cloro</option>
+            <option value="APQ-4">ITC APQ-4: Amoníaco anhidro</option>
+            <option value="APQ-5">ITC APQ-5: Gases y botellones</option>
+            <option value="APQ-6">ITC APQ-6: Líquidos corrosivos (Fijos)</option>
+            <option value="APQ-7">ITC APQ-7: Líquidos tóxicos (Fijos)</option>
+            <option value="APQ-8">ITC APQ-8: Fertilizantes con nitrato amónico</option>
+            <option value="APQ-9">ITC APQ-9: Peróxidos orgánicos y autorreactivas</option>
+            <option value="APQ-10">ITC APQ-10: Recipientes móviles (General)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="almacen_ubicacion">Ubicación y Notas:</label>
+        <input type="text" id="almacen_ubicacion" placeholder="Detalle de zona, cubeto, sala interior o exterior...">
+      </div>
+    </div>
+
+    <!-- Bloque 2: Productos y Regla de Adición -->
+    <div class="card">
+      <div class="card-title">
+        <span>2. Sustancias y Mezclas Almacenadas (Tabla I RD 656/2017)</span>
+        <button class="btn btn-accent btn-sm" onclick="abrirModalOCR()">📷 Escanear Etiqueta (OCR / Cámara)</button>
+      </div>
+
+      <div class="banner banner-info">
+        <strong>Regla de Adición Art. 2 (RD 656/2017):</strong> La suma de cocientes R = Σ(qi / Qi) debe evaluarse independientemente para cada grupo de peligro (<strong>Físicos</strong>, <strong>Salud</strong> y <strong>Medio Ambiente</strong>). Si algún R ≥ 1 respecto a Columna 5, el RAPQ resulta aplicable.
+      </div>
+
+      <div class="table-responsive">
+        <table id="tablaProductos">
+          <thead>
+            <tr>
+              <th>Producto / Nombre Comercial</th>
+              <th>CAS / Químico</th>
+              <th>ITC Orientativa</th>
+              <th>Grupo CLP</th>
+              <th>Frases H</th>
+              <th>Cantidad</th>
+              <th>Unidad</th>
+              <th>Umbral C5 (Aplica)</th>
+              <th>Umbral C6 (Proyecto)</th>
+              <th>qi / C5</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="cuerpoTablaProductos">
+            <!-- Filas dinámicas -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-outline" onclick="agregarFilaProducto()">➕ Añadir Fila Manual</button>
+        <button class="btn btn-primary" onclick="calcularAdicionRAPQ()">⚡ Calcular Aplicabilidad & Umbrales</button>
+        <button class="btn btn-danger" onclick="limpiarCalculadoraConfirmada()">🗑️ Vaciar Calculadora</button>
+      </div>
+    </div>
+
+    <!-- Bloque 3: Resumen de Cálculos y Conclusiones -->
+    <div class="card" id="bloqueResultados" style="display:none;">
+      <div class="card-title">3. Dictamen y Desglose Matemático</div>
+
+      <div id="bannerDictamenGlobal" class="banner"></div>
+
+      <div class="form-grid">
+        <div class="card" style="margin-bottom:0;">
+          <div style="font-weight:700; color:var(--primary); margin-bottom:6px;">💥 Peligros Físicos</div>
+          <div>Suma Σ(qi / C5): <strong id="res_sum_fisicos">-</strong></div>
+          <div>Suma Σ(qi / C6) (Proyecto): <strong id="res_sum_fisicos_c6">-</strong></div>
+          <div id="pill_fisicos" class="r-pill" style="margin-top:6px;">-</div>
+        </div>
+
+        <div class="card" style="margin-bottom:0;">
+          <div style="font-weight:700; color:var(--primary); margin-bottom:6px;">☣️ Peligros para la Salud</div>
+          <div>Suma Σ(qi / C5): <strong id="res_sum_salud">-</strong></div>
+          <div>Suma Σ(qi / C6) (Proyecto): <strong id="res_sum_salud_c6">-</strong></div>
+          <div id="pill_salud" class="r-pill" style="margin-top:6px;">-</div>
+        </div>
+
+        <div class="card" style="margin-bottom:0;">
+          <div style="font-weight:700; color:var(--primary); margin-bottom:6px;">🌱 Medio Ambiente</div>
+          <div>Suma Σ(qi / C5): <strong id="res_sum_ma">-</strong></div>
+          <div>Suma Σ(qi / C6) (Proyecto): <strong id="res_sum_ma_c6">-</strong></div>
+          <div id="pill_ma" class="r-pill" style="margin-top:6px;">-</div>
+        </div>
+      </div>
+
+      <div style="margin-top:14px;" id="cajaDetalleExplicativo"></div>
+
+      <!-- Orientación de ITCs y enlace a fichas -->
+      <div style="margin-top:16px;">
+        <div class="card-title">4. Orientación de Instrucciones Técnicas Aplicables (ITCs)</div>
+        <p class="input-hint" style="margin-bottom:10px;">
+          Esta asignación es una propuesta orientativa basada en la naturaleza físico-química, frases H y tipo de recipiente. No sustituye la clasificación formal de proyecto.
+        </p>
+        <div id="contenedorBotonesITC" class="btn-group">
+          <!-- Botones dinámicos generados para pasar a la ficha -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ========================================== -->
+  <!-- PESTAÑA B: REVISIÓN DEL INSPECTOR PROPIO   -->
+  <!-- ========================================== -->
+  <div id="tabInsp" class="tab-content">
+    
+    <!-- Gestión de Revisiones y Copias de Respaldo -->
+    <div class="card">
+      <div class="card-title">1. Base de Datos Persistente (IndexedDB) & Respaldo Total</div>
+      <div class="banner banner-success">
+        <strong>Persistencia Completa:</strong> Todos los registros, listas de chequeo y <strong>fotografías de alta resolución</strong> se guardan en la base de datos local <code>IndexedDB</code> del navegador. No se borran al cerrar ni al apagar el equipo. Utilice los botones de respaldo para exportar o importar copias de seguridad en formato <code>.json</code>.
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="selRevisionGuardada">Revisiones guardadas en la base de datos:</label>
+          <select id="selRevisionGuardada" onchange="cargarRevisionSeleccionada()">
+            <option value="">-- Seleccionar o crear nueva --</option>
+          </select>
+        </div>
+        <div class="form-group" style="justify-content: flex-end;">
+          <div class="btn-group">
+            <button class="btn btn-outline" onclick="iniciarNuevaFicha()">📄 Nueva Ficha</button>
+            <button class="btn btn-danger" onclick="eliminarRevisionActual()">🗑️ Eliminar Ficha</button>
+          </div>
+        </div>
+      </div>
+      <div class="btn-group" style="margin-top:8px; border-top:1px dashed var(--border); padding-top:10px;">
+        <button class="btn btn-primary" onclick="exportarBackupCompleto()">📦 Descargar Respaldo Total (.json con fotos)</button>
+        <button class="btn btn-outline" onclick="document.getElementById('inputImportBackup').click()">📥 Importar / Restaurar Respaldo</button>
+        <input type="file" id="inputImportBackup" accept=".json" style="display:none;" onchange="importarBackupCompleto(this)">
+      </div>
+    </div>
+
+    <!-- Metadatos de la Inspección -->
+    <div class="card">
+      <div class="card-title">2. Datos Generales de la Inspección Reglamentaria</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="insp_titular">Empresa / Titular:</label>
+          <input type="text" id="insp_titular" placeholder="Razón social titular">
+        </div>
+        <div class="form-group">
+          <label for="insp_inspector">Inspector Propio Designado:</label>
+          <input type="text" id="insp_inspector" placeholder="Nombre del técnico cualificado">
+        </div>
+        <div class="form-group">
+          <label for="insp_fecha">Fecha de Revisión:</label>
+          <input type="date" id="insp_fecha">
+        </div>
+        <div class="form-group">
+          <label for="insp_expediente">N.º Expediente / Registro OC-CCAA:</label>
+          <input type="text" id="insp_expediente" placeholder="Ej. EXP-APQ-2026/04">
+        </div>
+        <div class="form-group">
+          <label for="insp_almacen_nombre">Identificación / Ubicación Almacén:</label>
+          <input type="text" id="insp_almacen_nombre" placeholder="Nombre o TAG de la instalación">
+        </div>
+        <div class="form-group">
+          <label for="insp_itc_sel">ITC Objeto de Revisión:</label>
+          <select id="insp_itc_sel" onchange="cambiarPlantillaITC(this.value)">
+            <option value="APQ-1">ITC APQ-1: Depósitos Fijos Líquidos Inflamables (Art. 51)</option>
+            <option value="APQ-6">ITC APQ-6: Líquidos Corrosivos en Fijos (Art. 27)</option>
+            <option value="APQ-7">ITC APQ-7: Líquidos Tóxicos en Fijos (Art. 28 y 29)</option>
+            <option value="APQ-9">ITC APQ-9: Peróxidos Orgánicos y Autorreactivas (Art. 29)</option>
+            <option value="APQ-10">ITC APQ-10: Recipientes Móviles (Art. 16)</option>
+            <option value="MANUAL">Otras ITCs (APQ-0, 2, 3, 4, 5, 8) - Sin Plantilla Auditada</option>
+          </select>
+        </div>
+      </div>
+      <div class="banner banner-info" id="bannerFuentePlantilla">
+        Fuente técnica de la lista de chequeo: Documentación de referencia TÜV SÜD / UNE 192000-1.
+      </div>
+    </div>
+
+    <!-- Lista de Comprobación -->
+    <div class="card">
+      <div class="card-title">
+        <span>3. Puntos de Comprobación Reglamentaria</span>
+        <button class="btn btn-outline btn-sm" onclick="agregarPuntoChequeoManual()">➕ Añadir Punto Específico</button>
+      </div>
+
+      <div id="contenedorChecklist">
+        <!-- Render dinámico según plantilla -->
+      </div>
+
+      <div class="form-group" style="margin-top:14px;">
+        <label for="insp_dictamen_final">Dictamen Final del Inspector Propio:</label>
+        <textarea id="insp_dictamen_final" placeholder="Conclusiones, no conformidades críticas y plazos de subsanación según UNE 192000-1 (Leve: próx. inspección; Grave: máx 6 meses; Crítico: fuera de servicio inmediato)..."></textarea>
+      </div>
+
+      <!-- Evidencias Fotográficas -->
+      <div style="margin-top:16px;">
+        <div class="card-title">4. Evidencias Fotográficas (Guardadas de Forma Permanente)</div>
+        <div class="form-grid">
+          <div>
+            <input type="file" id="camaraEvidencia" accept="image/*" capture="environment" style="display:none;" onchange="procesarFotoEvidencia(this)">
+            <input type="file" id="galeriaEvidencia" accept="image/*" style="display:none;" onchange="procesarFotoEvidencia(this)">
+            <button class="btn btn-accent" onclick="mostrarOpcionesFotoEvidencia()">📸 Adjuntar Fotografía de Campo</button>
+            <span class="input-hint" style="display:block; margin-top:4px;">Las imágenes se almacenan junto a la ficha en IndexedDB y no se pierden al cerrar el navegador.</span>
+          </div>
+        </div>
+        <div id="galeriaFotosMemoria" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;"></div>
+      </div>
+
+      <!-- Acciones de Cierre -->
+      <div class="btn-group" style="margin-top:18px;">
+        <button class="btn btn-success" onclick="guardarFichaRevisionDB()">💾 Guardar Ficha Completa con Fotos</button>
+        <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimir / Exportar a PDF</button>
+        <button class="btn btn-accent" onclick="prepararEnvioCorreo()">✉️ Preparar Borrador de Correo</button>
+        <button class="btn btn-outline" onclick="compartirWebShare()">📤 Compartir Informe (Web Share)</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========================================== -->
+<!-- MODAL OCR Y EXTRACCIÓN DE ETIQUETA        -->
+<!-- ========================================== -->
+<div id="modalOCR" class="modal-overlay">
+  <div class="modal-box">
+    <div class="card-title">
+      <span>Extracción de Datos de Etiqueta (OCR Local en Cliente)</span>
+      <button class="btn btn-outline btn-sm" onclick="cerrarModalOCR()">✖ Cerrar</button>
+    </div>
+    
+    <div class="banner banner-info">
+      La imagen se procesa exclusivamente dentro de tu navegador mediante <strong>Tesseract.js</strong> (WebAssembly). Ninguna foto se transmite ni se almacena en servidores externos.
+    </div>
+
+    <div class="form-grid">
+      <div>
+        <label>Seleccionar método de entrada:</label>
+        <div class="btn-group">
+          <input type="file" id="ocrInputCam" accept="image/*" capture="environment" style="display:none;" onchange="ejecutarOCRLocal(this)">
+          <input type="file" id="ocrInputFile" accept="image/*" style="display:none;" onchange="ejecutarOCRLocal(this)">
+          <button class="btn btn-primary" onclick="document.getElementById('ocrInputCam').click()">📷 Tomar Foto (Cámara)</button>
+          <button class="btn btn-outline" onclick="document.getElementById('ocrInputFile').click()">📁 Subir desde Archivo/Galería</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="ocrProgreso" style="display:none; margin:10px 0; font-weight:700; color:var(--accent);">
+      ⏳ Leyendo etiqueta localmente en el navegador... <span id="ocrPorcentaje">0%</span>
+    </div>
+
+    <div class="form-group" style="margin-top:10px;">
+      <label for="ocrTextoBruto">Texto reconocido sin procesar:</label>
+      <textarea id="ocrTextoBruto" style="height:70px; font-size:0.75rem;" placeholder="Aquí aparecerá el texto detectado por OCR para revisión..."></textarea>
+    </div>
+
+    <div class="card-title" style="margin-top:12px;">Campos Propuestos (Verifique y Corrija):</div>
+    
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="ocr_prop_nombre">Nombre Comercial / Sustancia:</label>
+        <input type="text" id="ocr_prop_nombre">
+      </div>
+      <div class="form-group">
+        <label for="ocr_prop_frasesH">Frases H Detectadas:</label>
+        <input type="text" id="ocr_prop_frasesH" placeholder="Ej. H225, H319, H315">
+      </div>
+      <div class="form-group">
+        <label for="ocr_prop_vol_envase">Contenido por Envase:</label>
+        <input type="number" id="ocr_prop_vol_envase" value="25" step="any">
+      </div>
+      <div class="form-group">
+        <label for="ocr_prop_unidad">Unidad:</label>
+        <select id="ocr_prop_unidad">
+          <option value="L">Litros (L) - Líquidos</option>
+          <option value="kg">Kilogramos (kg) - Sólidos / Gases licuados</option>
+          <option value="Nm3">Nm³ - Gases comprimidos</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="ocr_prop_num_envases">N.º de Envases (No detectable por foto):</label>
+        <input type="number" id="ocr_prop_num_envases" value="1" min="1">
+      </div>
+    </div>
+
+    <div class="banner banner-warning">
+      <strong>Total Calculado:</strong> <span id="ocr_total_preview">25 L</span> (Contenido por envase × N.º envases).
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-success" onclick="transferirProductoDesdeOCR()">✅ Insertar Producto en Tabla</button>
+      <button class="btn btn-outline" onclick="cerrarModalOCR()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================== -->
+<!-- MODAL DE FUENTES LEGALES Y REFERENCIAS     -->
+<!-- ========================================== -->
+<div id="modalFuentes" class="modal-overlay">
+  <div class="modal-box">
+    <div class="card-title">
+      <span>Bases Técnicas, Legales y Normativas</span>
+      <button class="btn btn-outline btn-sm" onclick="cerrarFuentesLegales()">✖ Cerrar</button>
+    </div>
+    <div style="font-size:0.85rem; display:flex; flex-direction:column; gap:10px;">
+      <p><strong>1. Norma Legal Superior:</strong> Real Decreto 656/2017, de 23 de junio, por el que se aprueba el Reglamento de Almacenamiento de Productos Químicos y sus Instrucciones Técnicas Complementarias MIE APQ-0 a APQ-10 (Publicado en BOE núm. 176, de 25/07/2017).</p>
+      <p><strong>2. Guía Técnica de Aplicación del RAPQ:</strong> Publicada por el Ministerio de Industria, Comercio y Turismo. Carácter orientativo no vinculante.</p>
+      <p><strong>3. Documentos de Inspección y Formación TÜV SÜD:</strong> Listas de chequeo de inspector propio basadas en los formatos aportados (MC.06-PI-APQ) para APQ-1[cite: 29], APQ-6[cite: 86], APQ-7[cite: 82], APQ-9[cite: 63] y APQ-10[cite: 80].</p>
+      <p><strong>4. Norma UNE 192000-1:2011:</strong> Procedimientos para inspectores reglamentarios en seguridad industrial y criterios de defectos (Leve, Grave y Muy Grave/Crítico)[cite: 75].</p>
+      <p><strong>5. Nota sobre FDS Históricas:</strong> El RD 379/2001 y las clasificaciones antiguas de inflamabilidad (Clases B1, B2, C, D) quedaron derogadas[cite: 11]. La aplicabilidad legal actual se rige por la Tabla I del RD 656/2017 y el Reglamento (CE) 1272/2008 (CLP)[cite: 6, 26].</p>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ========================================================================= */
+/* BASE DE DATOS NORMATIVA: UMBRALES TABLA I RD 656/2017 (C5 y C6)          */
+/* ========================================================================= */
+const UMBRALES_CLP = {
+  // Peligros Físicos
+  "H220": { grupo: "Físico", c5: 50, c6: 500, unidad: "kg", desc: "Gas inflamable Cat 1" },
+  "H221": { grupo: "Físico", c5: 250, c6: 2500, unidad: "kg", desc: "Gas inflamable Cat 2" },
+  "H224": { grupo: "Físico", c5: 10, c6: 100, unidad: "L", desc: "Líquido muy inflamable Cat 1" },
+  "H225": { grupo: "Físico", c5: 50, c6: 1000, unidad: "L", desc: "Líquido fácilmente inflamable Cat 2" },
+  "H226": { grupo: "Físico", c5: 250, c6: 5000, unidad: "L", desc: "Líquido inflamable Cat 3" },
+  "H240": { grupo: "Físico", c5: 10, c6: 50, unidad: "kg", desc: "Autorreactivos / Peróxidos Tipo A" },
+  "H241": { grupo: "Físico", c5: 25, c6: 100, unidad: "kg", desc: "Autorreactivos / Peróxidos Tipo B" },
+  "H242": { grupo: "Físico", c5: 50, c6: 500, unidad: "kg", desc: "Autorreactivos / Peróxidos Tipo C, D, E, F" },
+  "H250": { grupo: "Físico", c5: 10, c6: 50, unidad: "kg", desc: "Sólidos / Líquidos pirofóricos" },
+  "H271": { grupo: "Físico", c5: 50, c6: 250, unidad: "kg", desc: "Líquidos / Sólidos comburentes Cat 1" },
+  "H272": { grupo: "Físico", c5: 250, c6: 1000, unidad: "kg", desc: "Líquidos / Sólidos comburentes Cat 2, 3" },
+
+  // Peligros para la Salud
+  "H300": { grupo: "Salud", c5: 50, c6: 200, unidad: "kg", desc: "Toxicidad aguda oral Cat 1 o 2" },
+  "H310": { grupo: "Salud", c5: 50, c6: 200, unidad: "kg", desc: "Toxicidad aguda dérmica Cat 1 o 2" },
+  "H330": { grupo: "Salud", c5: 10, c6: 100, unidad: "kg", desc: "Toxicidad aguda inhalación Cat 1 o 2" },
+  "H301": { grupo: "Salud", c5: 250, c6: 1000, unidad: "kg", desc: "Toxicidad aguda oral Cat 3" },
+  "H311": { grupo: "Salud", c5: 250, c6: 1000, unidad: "kg", desc: "Toxicidad aguda dérmica Cat 3" },
+  "H331": { grupo: "Salud", c5: 100, c6: 500, unidad: "kg", desc: "Toxicidad aguda inhalación Cat 3" },
+  "H314": { grupo: "Salud", c5: 200, c6: 1000, unidad: "L", desc: "Corrosión cutánea Cat 1A, 1B, 1C" },
+  "H370": { grupo: "Salud", c5: 250, c6: 1000, unidad: "kg", desc: "STOT SE Cat 1" },
+  "H372": { grupo: "Salud", c5: 500, c6: 2000, unidad: "kg", desc: "STOT RE Cat 1" },
+  "H350": { grupo: "Salud", c5: 100, c6: 1000, unidad: "kg", desc: "Carcinógeno Cat 1A, 1B" },
+  "H340": { grupo: "Salud", c5: 100, c6: 1000, unidad: "kg", desc: "Mutágeno Cat 1A, 1B" },
+  "H360": { grupo: "Salud", c5: 100, c6: 1000, unidad: "kg", desc: "Tóxico reproducción Cat 1A, 1B" },
+
+  // Peligros para el Medio Ambiente
+  "H400": { grupo: "Medio Ambiente", c5: 250, c6: 2500, unidad: "kg", desc: "Acuático agudo Cat 1" },
+  "H410": { grupo: "Medio Ambiente", c5: 250, c6: 2500, unidad: "kg", desc: "Acuático crónico Cat 1" },
+  "H411": { grupo: "Medio Ambiente", c5: 1000, c6: 10000, unidad: "kg", desc: "Acuático crónico Cat 2" }
+};
+
+/* ========================================================================= */
+/* PLANTILLAS AUDITADAS DE LISTAS DE COMPROBACIÓN                           */
+/* ========================================================================= */
+const PLANTILLAS_INSPECCION = {
+  "APQ-1": [
+    { pos: "1.1", req: "Duchas y lavaojos (comprobadas semanalmente, señalizadas, libres de obstáculos, distancia ≤ 10 m)", norma: "Art. 54.1.b / Art. 51" },
+    { pos: "1.2", req: "Equipos de protección individual (EPIs acordes a producto, antiestáticos en zonas inflamables, vigentes)", norma: "Art. 54.2 / RD 1407" },
+    { pos: "1.3", req: "Sistemas contraincendios (Extintores 144B a ≤15m, BIEs, sistemas fijos según RIPI RD 513/2017)", norma: "Art. 53" },
+    { pos: "1.4", req: "Detección de fugas y sistemas de alarma acústica audible comprobados", norma: "Art. 53.6" },
+    { pos: "1.5", req: "Tomas de tierra y continuidad eléctrica en tuberías y elementos metálicos (resistencia < 20 Ω)", norma: "Art. 56.1" },
+    { pos: "1.6", req: "Estado de cubetos de retención, cimentaciones, arquetas y válvulas de purga cerradas", norma: "Art. 56.2" },
+    { pos: "1.7", req: "Venteos probados por mantenimiento o inspeccionados visualmente (Art. 56.4)", norma: "Art. 56.4" },
+    { pos: "1.8", req: "Revisión interior de tanques en recipientes fijos cada 15 años (si aplica)", norma: "Art. 51.2" }
+  ],
+  "APQ-6": [
+    { pos: "6.1", req: "Duchas y lavaojos (ensayadas semanalmente, caudal continuo, no más de 10 m)", norma: "Art. 27.2 / Plan Mto" },
+    { pos: "6.2", req: "EPIs completos contra riesgo químico (visores, guantes resistentes EN 374, calzado)", norma: "Art. 27.2" },
+    { pos: "6.3", req: "Protección de bridas y puntos de unión con riesgo de proyección de líquido", norma: "Art. 27.2" },
+    { pos: "6.4", req: "Cubetos estancos, distancia borde cubeto a pared de tanque ≥ 1 m, sin grietas", norma: "Art. 27.2" },
+    { pos: "6.5", req: "Venteos con diámetro ≥ 35 mm o conexión llenado/vaciado con descarga segura", norma: "Art. 27.2" },
+    { pos: "6.6", req: "Revisión interior / Medición de espesores cada 5 años en tanques fijos", norma: "Art. 27 / MC.06-PI-APQ-6" }
+  ],
+  "APQ-7": [
+    { pos: "7.1", req: "Duchas y lavaojos comprobadas semanalmente con registro documental", norma: "Art. 28 / Plan Mto" },
+    { pos: "7.2", req: "Alarma independiente de sobrellenado y doble indicador de nivel operativo", norma: "Art. 28" },
+    { pos: "7.3", req: "Protección contra salpicaduras en bridas y canalización de drenajes", norma: "Art. 28" },
+    { pos: "7.4", req: "Ventilación forzada con alarma de fallo en áreas susceptibles de acumular gases tóxicos", norma: "Art. 28" },
+    { pos: "7.5", req: "Revisión exterior quinquenal de recipientes, anclajes y soportes (cada 5 años)", norma: "Art. 29.2" },
+    { pos: "7.6", req: "Revisión interior decenal (cada 10 años) o control de detección de fugas en doble pared", norma: "Art. 29.3 / 29.4" }
+  ],
+  "APQ-9": [
+    { pos: "9.1", req: "Indicadores de temperatura comprobados 2 veces/semana y calibrados cada 6 meses", norma: "Tabla 3 / Art. 29" },
+    { pos: "9.2", req: "Dispositivos de alarma e instrumentación frigorífica comprobados mensualmente y revisados c/6 meses", norma: "Tabla 3 / Art. 29" },
+    { pos: "9.3", req: "Dispositivos de descompresión de emergencia (techo ligero) comprobados y despejados", norma: "Art. 29.4" },
+    { pos: "9.4", req: "Almacenamiento exclusivo: ausencia total de otros químicos o residuos combustibles", norma: "Art. 29.2" },
+    { pos: "9.5", req: "Control de temperatura de regulación según FDS (< 45°C) y de emergencia", norma: "Art. 29.2" }
+  ],
+  "APQ-10": [
+    { pos: "10.1", req: "Duchas lavaojos y sistemas de contención de vertidos (cubetos móviles limpios y vacíos)", norma: "Art. 16.1 / Doc TÜV SÜD" },
+    { pos: "10.2", req: "Ventilación natural o forzada suficiente y salidas no obstruidas", norma: "Art. 16.1" },
+    { pos: "10.3", req: "Capacidad de carga de estanterías visible, respetada y con estabilidad mecánica", norma: "Art. 16.1" },
+    { pos: "10.4", req: "Señalización de seguridad conforme a RD 485/1997 y señalización ATEX si procede", norma: "Art. 16.1" },
+    { pos: "10.5", req: "Incompatibilidades de almacenamiento conjunto respetadas (RD 656/2017 Art. 10)", norma: "Art. 10 / Art. 16" },
+    { pos: "10.6", req: "Recipientes homologados según ADR, etiquetados vigentes y alturas de pila límite respetadas", norma: "Art. 16" }
+  ]
+};
+
+/* ========================================================================= */
+/* GESTIÓN DE INDEXEDDB (PERSISTENCIA TOTAL CON IMÁGENES)                    */
+/* ========================================================================= */
+const DB_NAME = "RAPQ_Inspector_DB";
+const DB_VERSION = 1;
+let db = null;
+
+function initIndexedDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    request.onupgradeneeded = function(e) {
+      const database = e.target.result;
+      if (!database.objectStoreNames.contains("revisiones")) {
+        database.createObjectStore("revisiones", { keyPath: "expediente" });
+      }
+    };
+    request.onsuccess = function(e) {
+      db = e.target.result;
+      actualizarComboRevisiones();
+      resolve(db);
+    };
+    request.onerror = function(e) {
+      console.error("Error al abrir IndexedDB:", e);
+      reject(e);
+    };
+  });
+}
+
+function guardarFichaRevisionDB() {
+  const exp = document.getElementById('insp_expediente').value.trim() || `REV-${Date.now()}`;
+  document.getElementById('insp_expediente').value = exp;
+
+  const ficha = {
+    expediente: exp,
+    titular: document.getElementById('insp_titular').value,
+    inspector: document.getElementById('insp_inspector').value,
+    fecha: document.getElementById('insp_fecha').value,
+    almacen: document.getElementById('insp_almacen_nombre').value,
+    itc: document.getElementById('insp_itc_sel').value,
+    dictamen: document.getElementById('insp_dictamen_final').value,
+    items: itemsChecklistActual,
+    fotos: fotosEvidenciaMemoria, // Fotos almacenadas permanentemente
+    fechaGuardado: new Date().toISOString()
+  };
+
+  const tx = db.transaction(["revisiones"], "readwrite");
+  const store = tx.objectStore("revisiones");
+  store.put(ficha);
+
+  tx.oncomplete = function() {
+    actualizarComboRevisiones();
+    document.getElementById('selRevisionGuardada').value = exp;
+    alert(`✅ Ficha e imágenes guardadas permanentemente en IndexedDB con expediente: ${exp}`);
+  };
+
+  tx.onerror = function(e) {
+    alert("Error al guardar en IndexedDB: " + e.target.error);
+  };
+}
+
+function actualizarComboRevisiones() {
+  if (!db) return;
+  const sel = document.getElementById('selRevisionGuardada');
+  sel.innerHTML = '<option value="">-- Seleccionar o crear nueva --</option>';
+
+  const tx = db.transaction(["revisiones"], "readonly");
+  const store = tx.objectStore("revisiones");
+  const request = store.openCursor();
+
+  request.onsuccess = function(e) {
+    const cursor = e.target.result;
+    if (cursor) {
+      const ficha = cursor.value;
+      const opt = document.createElement('option');
+      opt.value = ficha.expediente;
+      opt.innerText = `${ficha.expediente} - ${ficha.almacen || 'Sin nombre'} (${ficha.itc})`;
+      sel.appendChild(opt);
+      cursor.continue();
+    }
+  };
+}
+
+function cargarRevisionSeleccionada() {
+  const exp = document.getElementById('selRevisionGuardada').value;
+  if (!exp || !db) return;
+
+  const tx = db.transaction(["revisiones"], "readonly");
+  const store = tx.objectStore("revisiones");
+  const request = store.get(exp);
+
+  request.onsuccess = function() {
+    const ficha = request.result;
+    if (!ficha) return;
+
+    document.getElementById('insp_titular').value = ficha.titular || "";
+    document.getElementById('insp_inspector').value = ficha.inspector || "";
+    document.getElementById('insp_fecha').value = ficha.fecha || "";
+    document.getElementById('insp_expediente').value = ficha.expediente || "";
+    document.getElementById('insp_almacen_nombre').value = ficha.almacen || "";
+    document.getElementById('insp_itc_sel').value = ficha.itc || "APQ-1";
+    document.getElementById('insp_dictamen_final').value = ficha.dictamen || "";
+
+    document.getElementById('contenedorChecklist').innerHTML = '';
+    itemsChecklistActual = [];
+    if (ficha.items && ficha.items.length > 0) {
+      ficha.items.forEach(pt => {
+        agregarPuntoChequeoDOM(pt.pos, pt.texto, pt.refNorma, pt.estado, pt.obs);
+      });
+    }
+
+    fotosEvidenciaMemoria = ficha.fotos || [];
+    renderGaleriaMemoria();
+  };
+}
+
+function iniciarNuevaFicha() {
+  if (confirm("¿Desea limpiar el formulario para iniciar una nueva ficha?")) {
+    document.getElementById('insp_titular').value = "";
+    document.getElementById('insp_inspector').value = "";
+    document.getElementById('insp_fecha').value = new Date().toISOString().split('T')[0];
+    document.getElementById('insp_expediente').value = "";
+    document.getElementById('insp_almacen_nombre').value = "";
+    document.getElementById('insp_dictamen_final').value = "";
+    document.getElementById('selRevisionGuardada').value = "";
+    fotosEvidenciaMemoria = [];
+    renderGaleriaMemoria();
+    cambiarPlantillaITC(document.getElementById('insp_itc_sel').value);
+  }
+}
+
+function eliminarRevisionActual() {
+  const exp = document.getElementById('selRevisionGuardada').value;
+  if (!exp) {
+    alert("Seleccione una ficha de la lista para eliminarla.");
+    return;
+  }
+  if (confirm(`¿Confirma eliminar definitivamente la revisión ${exp} de la base de datos?`)) {
+    const tx = db.transaction(["revisiones"], "readwrite");
+    const store = tx.objectStore("revisiones");
+    store.delete(exp);
+    tx.oncomplete = function() {
+      actualizarComboRevisiones();
+      iniciarNuevaFicha();
+      alert("✅ Ficha eliminada correctamente.");
+    };
+  }
+}
+
+/* ========================================================================= */
+/* EXPORTACIÓN E IMPORTACIÓN DE COPIA DE SEGURIDAD FÍSICA (.JSON)            */
+/* ========================================================================= */
+function exportarBackupCompleto() {
+  if (!db) return;
+  const tx = db.transaction(["revisiones"], "readonly");
+  const store = tx.objectStore("revisiones");
+  const request = store.getAll();
+
+  request.onsuccess = function() {
+    const data = {
+      tipo: "BACKUP_RAPQ_TOTAL",
+      fecha: new Date().toISOString(),
+      revisiones: request.result
+    };
+    const jsonStr = JSON.stringify(data);
+    const blob = new Blob([jsonStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `CopiaSeguridad_RAPQ_${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+}
+
+function importarBackupCompleto(input) {
+  if (!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.tipo !== "BACKUP_RAPQ_TOTAL" || !Array.isArray(data.revisiones)) {
+        throw new Error("Formato de respaldo no válido.");
+      }
+
+      const tx = db.transaction(["revisiones"], "readwrite");
+      const store = tx.objectStore("revisiones");
+      data.revisiones.forEach(rev => store.put(rev));
+
+      tx.oncomplete = function() {
+        actualizarComboRevisiones();
+        alert(`✅ Restauración completada: Se han importado ${data.revisiones.length} fichas con sus fotografías.`);
+      };
+    } catch (err) {
+      alert("Error al importar la copia de seguridad: " + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+/* ========================================================================= */
+/* VARIABLES DE SESIÓN Y MEMORIA                                             */
+/* ========================================================================= */
+let listaProductos = [];
+let fotosEvidenciaMemoria = [];
+let itemsChecklistActual = [];
+
+/* ========================================================================= */
+/* FUNCIONES DE PESTAÑAS Y NAVEGACIÓN                                       */
+/* ========================================================================= */
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  if (tabId === 'tabCalc') document.getElementById('tabBtnCalc').classList.add('active');
+  if (tabId === 'tabInsp') document.getElementById('tabBtnInsp').classList.add('active');
+}
+
+function mostrarFuentesLegales() { document.getElementById('modalFuentes').style.display = 'flex'; }
+function cerrarFuentesLegales() { document.getElementById('modalFuentes').style.display = 'none'; }
+
+/* ========================================================================= */
+/* GESTIÓN DE PRODUCTOS Y TABLA RAPQ                                         */
+/* ========================================================================= */
+function agregarFilaProducto(datos = null) {
+  const tbody = document.getElementById('cuerpoTablaProductos');
+  const index = listaProductos.length;
+
+  const item = datos || {
+    nombre: "Nuevo Producto",
+    quimico: "",
+    cas: "",
+    itc: "auto",
+    grupo: "Físico",
+    frasesH: "H225",
+    cantidad: 100,
+    unidad: "L",
+    c5: 50,
+    c6: 1000
+  };
+  listaProductos.push(item);
+
+  const tr = document.createElement('tr');
+  tr.id = `fila_prod_${index}`;
+  tr.innerHTML = `
+    <td><input type="text" value="${item.nombre}" onchange="actualizarCampoProd(${index}, 'nombre', this.value)" style="width:130px;"></td>
+    <td><input type="text" value="${item.quimico}" placeholder="Nomenclatura FDS" onchange="actualizarCampoProd(${index}, 'quimico', this.value)" style="width:110px;"></td>
+    <td>
+      <select onchange="actualizarCampoProd(${index}, 'itc', this.value)" style="width:90px;">
+        <option value="auto" ${item.itc==='auto'?'selected':''}>Auto</option>
+        <option value="APQ-1" ${item.itc==='APQ-1'?'selected':''}>APQ-1</option>
+        <option value="APQ-6" ${item.itc==='APQ-6'?'selected':''}>APQ-6</option>
+        <option value="APQ-7" ${item.itc==='APQ-7'?'selected':''}>APQ-7</option>
+        <option value="APQ-9" ${item.itc==='APQ-9'?'selected':''}>APQ-9</option>
+        <option value="APQ-10" ${item.itc==='APQ-10'?'selected':''}>APQ-10</option>
+      </select>
+    </td>
+    <td>
+      <select onchange="actualizarCampoProd(${index}, 'grupo', this.value)" style="width:100px;">
+        <option value="Físico" ${item.grupo==='Físico'?'selected':''}>Físico</option>
+        <option value="Salud" ${item.grupo==='Salud'?'selected':''}>Salud</option>
+        <option value="Medio Ambiente" ${item.grupo==='Medio Ambiente'?'selected':''}>Medio Amb.</option>
+      </select>
+    </td>
+    <td><input type="text" value="${item.frasesH}" onchange="analizarFrasesHProd(${index}, this.value)" style="width:90px;"></td>
+    <td><input type="number" step="any" value="${item.cantidad}" onchange="actualizarCampoProd(${index}, 'cantidad', parseFloat(this.value)||0)" style="width:75px;"></td>
+    <td>
+      <select onchange="actualizarCampoProd(${index}, 'unidad', this.value)" style="width:65px;">
+        <option value="L" ${item.unidad==='L'?'selected':''}>L</option>
+        <option value="kg" ${item.unidad==='kg'?'selected':''}>kg</option>
+        <option value="Nm3" ${item.unidad==='Nm3'?'selected':''}>Nm³</option>
+      </select>
+    </td>
+    <td><input type="number" step="any" value="${item.c5}" onchange="actualizarCampoProd(${index}, 'c5', parseFloat(this.value)||1)" style="width:75px;"></td>
+    <td><input type="number" step="any" value="${item.c6}" onchange="actualizarCampoProd(${index}, 'c6', parseFloat(this.value)||1)" style="width:75px;"></td>
+    <td id="cociente_prod_${index}" style="font-weight:700;">-</td>
+    <td><button class="btn btn-danger btn-sm" onclick="eliminarFilaProducto(${index})">✕</button></td>
+  `;
+  tbody.appendChild(tr);
+}
+
+function actualizarCampoProd(index, campo, valor) {
+  if (listaProductos[index]) {
+    listaProductos[index][campo] = valor;
+  }
+}
+
+function analizarFrasesHProd(index, textoFrases) {
+  actualizarCampoProd(index, 'frasesH', textoFrases);
+  const frases = textoFrases.toUpperCase().match(/H\d{3}/g) || [];
+  
+  for (let f of frases) {
+    if (UMBRALES_CLP[f]) {
+      const u = UMBRALES_CLP[f];
+      listaProductos[index].grupo = u.grupo;
+      listaProductos[index].c5 = u.c5;
+      listaProductos[index].c6 = u.c6;
+      listaProductos[index].unidad = u.unidad;
+      
+      if (f.startsWith('H22') || f.startsWith('H24')) {
+        listaProductos[index].itc = f.startsWith('H24') ? 'APQ-9' : 'APQ-1';
+      } else if (f === 'H314') {
+        listaProductos[index].itc = 'APQ-6';
+      } else if (f.startsWith('H300') || f.startsWith('H330') || f.startsWith('H301')) {
+        listaProductos[index].itc = 'APQ-7';
+      }
+
+      recargarTablaProductos();
+      break;
+    }
+  }
+}
+
+function recargarTablaProductos() {
+  const tbody = document.getElementById('cuerpoTablaProductos');
+  tbody.innerHTML = '';
+  const aux = [...listaProductos];
+  listaProductos = [];
+  aux.forEach(item => agregarFilaProducto(item));
+}
+
+function eliminarFilaProducto(index) {
+  listaProductos.splice(index, 1);
+  recargarTablaProductos();
+}
+
+function limpiarCalculadoraConfirmada() {
+  if (confirm("¿Desea vaciar todas las sustancias introducidas y reiniciar el cálculo?")) {
+    listaProductos = [];
+    document.getElementById('cuerpoTablaProductos').innerHTML = '';
+    document.getElementById('bloqueResultados').style.display = 'none';
+  }
+}
+
+/* ========================================================================= */
+/* CÁLCULO DE LA REGLA DE ADICIÓN (ART. 2 RD 656/2017)                       */
+/* ========================================================================= */
+function calcularAdicionRAPQ() {
+  if (listaProductos.length === 0) {
+    alert("Por favor, añada al menos una sustancia para evaluar la aplicación del RAPQ.");
+    return;
+  }
+
+  let sumFisico = 0, sumFisicoC6 = 0;
+  let sumSalud = 0, sumSaludC6 = 0;
+  let sumMA = 0, sumMAC6 = 0;
+
+  listaProductos.forEach((p, idx) => {
+    const q = p.cantidad || 0;
+    const c5 = p.c5 > 0 ? p.c5 : 1;
+    const c6 = p.c6 > 0 ? p.c6 : 1;
+    const r_indiv = q / c5;
+
+    const tdCociente = document.getElementById(`cociente_prod_${idx}`);
+    if (tdCociente) tdCociente.innerText = r_indiv.toFixed(3);
+
+    if (p.grupo === "Físico") {
+      sumFisico += r_indiv;
+      sumFisicoC6 += (q / c6);
+    } else if (p.grupo === "Salud") {
+      sumSalud += r_indiv;
+      sumSaludC6 += (q / c6);
+    } else if (p.grupo === "Medio Ambiente") {
+      sumMA += r_indiv;
+      sumMAC6 += (q / c6);
+    }
+  });
+
+  const maxR = Math.max(sumFisico, sumSalud, sumMA);
+  const maxRC6 = Math.max(sumFisicoC6, sumSaludC6, sumMAC6);
+
+  document.getElementById('res_sum_fisicos').innerText = sumFisico.toFixed(3);
+  document.getElementById('res_sum_fisicos_c6').innerText = sumFisicoC6.toFixed(3);
+  actualizarPill('pill_fisicos', sumFisico);
+
+  document.getElementById('res_sum_salud').innerText = sumSalud.toFixed(3);
+  document.getElementById('res_sum_salud_c6').innerText = sumSaludC6.toFixed(3);
+  actualizarPill('pill_salud', sumSalud);
+
+  document.getElementById('res_sum_ma').innerText = sumMA.toFixed(3);
+  document.getElementById('res_sum_ma_c6').innerText = sumMAC6.toFixed(3);
+  actualizarPill('pill_ma', sumMA);
+
+  const banner = document.getElementById('bannerDictamenGlobal');
+  const detalle = document.getElementById('cajaDetalleExplicativo');
+  let dictamenHtml = "";
+
+  if (maxR > 1.000) {
+    banner.className = "banner banner-danger";
+    dictamenHtml = `<strong>APLICABILIDAD: EL RAPQ RESULTA APLICABLE (R máx = ${maxR.toFixed(3)} > 1)</strong>.`;
+  } else if (Math.abs(maxR - 1.000) < 0.001) {
+    banner.className = "banner banner-warning";
+    dictamenHtml = `<strong>CASO FRONTERA (R máx = 1.000)</strong>: Se alcanza el límite exacto de la Columna 5. Requiere confirmación técnica estricta de tolerancias y densidades.`;
+  } else {
+    banner.className = "banner banner-success";
+    dictamenHtml = `<strong>EL RAPQ NO RESULTA APLICABLE POR CANTIDAD (R máx = ${maxR.toFixed(3)} < 1)</strong>.`;
+  }
+
+  if (maxR >= 1.000) {
+    if (maxRC6 >= 1.000) {
+      dictamenHtml += `<br><span>Exigencia Documental: <strong>Requiere PROYECTO TÉCNICO Y CERTIFICADO FINAL DE OBRA</strong> (Suma C6 = ${maxRC6.toFixed(3)} ≥ 1).</span>`;
+    } else {
+      dictamenHtml += `<br><span>Exigencia Documental: <strong>Requiere MEMORIA TÉCNICA SIMPLIFICADA</strong> (Suma C6 = ${maxRC6.toFixed(3)} < 1).</span>`;
+    }
+  }
+
+  banner.innerHTML = dictamenHtml;
+
+  detalle.innerHTML = `
+    <div style="font-size:0.8rem; color:#475569; background:#f1f5f9; padding:8px; border-radius:5px;">
+      <strong>Desglose de cálculo:</strong> Los valores computados corresponden al cociente entre la cantidad real y los umbrales de la Tabla I (Columnas 5 y 6). Conforme al Art. 2, las sustancias pertenecientes a grupos de peligro distintos no se suman entre sí. Para recipientes móviles coexistentes con líquidos no inflamables ni miscibles en agua, aplican las exclusiones particulares del Art. 50 de la APQ-1 o APQ-10.
+    </div>
+  `;
+
+  actualizarOrientacionITC();
+  document.getElementById('bloqueResultados').style.display = 'block';
+}
+
+function actualizarPill(id, val) {
+  const el = document.getElementById(id);
+  if (val >= 1.0) {
+    el.className = "r-pill r-red";
+    el.innerText = `R = ${val.toFixed(3)} (≥ 1 Aplica)`;
+  } else if (val > 0.8) {
+    el.className = "r-pill r-yellow";
+    el.innerText = `R = ${val.toFixed(3)} (Próximo al límite)`;
+  } else {
+    el.className = "r-pill r-green";
+    el.innerText = `R = ${val.toFixed(3)} (< 1 No aplica)`;
+  }
+}
+
+/* ========================================================================= */
+/* ORIENTACIÓN DE ITC Y APERTURA DE FICHAS                                   */
+/* ========================================================================= */
+function actualizarOrientacionITC() {
+  const contenedor = document.getElementById('contenedorBotonesITC');
+  contenedor.innerHTML = '';
+  const tipoRecipiente = document.getElementById('almacen_recipiente').value;
+  const itcsDetectadas = new Set();
+
+  if (tipoRecipiente === 'movil') {
+    itcsDetectadas.add('APQ-10');
+  }
+
+  listaProductos.forEach(p => {
+    if (p.itc && p.itc !== 'auto') {
+      itcsDetectadas.add(p.itc);
+    } else {
+      if (p.grupo === 'Físico') {
+        if (p.frasesH.includes('H240') || p.frasesH.includes('H241') || p.frasesH.includes('H242')) {
+          itcsDetectadas.add('APQ-9');
+        } else if (tipoRecipiente === 'movil') {
+          itcsDetectadas.add('APQ-10');
+        } else {
+          itcsDetectadas.add('APQ-1');
+        }
+      } else if (p.grupo === 'Salud') {
+        if (p.frasesH.includes('H314')) {
+          itcsDetectadas.add(tipoRecipiente === 'movil' ? 'APQ-10' : 'APQ-6');
+        } else {
+          itcsDetectadas.add(tipoRecipiente === 'movil' ? 'APQ-10' : 'APQ-7');
+        }
+      }
+    }
+  });
+
+  if (itcsDetectadas.size === 0) {
+    contenedor.innerHTML = `<span style="font-size:0.8rem; color:#64748b;">No se dedujeron ITCs automáticas. Inserte productos con frases H o seleccione una en el menú superior.</span>`;
+    return;
+  }
+
+  itcsDetectadas.forEach(itc => {
+    const btn = document.createElement('button');
+    btn.className = "btn btn-primary";
+    btn.innerHTML = `📋 Abrir Ficha Inspector ${itc}`;
+    btn.onclick = () => vincularAFichaInspector(itc);
+    contenedor.appendChild(btn);
+  });
+}
+
+function vincularAFichaInspector(itcClave) {
+  const nombreAlmacen = document.getElementById('almacen_id').value || "Almacén Evaluado en Calculadora";
+  switchTab('tabInsp');
+  document.getElementById('insp_almacen_nombre').value = nombreAlmacen;
+  
+  const sel = document.getElementById('insp_itc_sel');
+  let match = false;
+  for (let i = 0; i < sel.options.length; i++) {
+    if (sel.options[i].value === itcClave) {
+      sel.selectedIndex = i;
+      match = true;
+      break;
+    }
+  }
+  if (!match) sel.value = "MANUAL";
+  cambiarPlantillaITC(sel.value);
+}
+
+/* ========================================================================= */
+/* PESTAÑA B: CHECKLIST DE INSPECTOR                                          */
+/* ========================================================================= */
+function cambiarPlantillaITC(itcKey) {
+  const cont = document.getElementById('contenedorChecklist');
+  const banner = document.getElementById('bannerFuentePlantilla');
+  cont.innerHTML = '';
+  itemsChecklistActual = [];
+
+  if (PLANTILLAS_INSPECCION[itcKey]) {
+    banner.innerText = `Plantilla Oficial Verificada: Hoja de Campo TÜV SÜD / Directrices RD 656/2017 para ${itcKey}.`;
+    PLANTILLAS_INSPECCION[itcKey].forEach(pt => {
+      agregarPuntoChequeoDOM(pt.pos, pt.req, pt.norma, "P", "");
+    });
+  } else {
+    banner.innerText = `Aviso: No se dispone de plantilla auditada para ${itcKey} en los documentos adjuntos. Añada puntos de verificación manualmente.`;
+    cont.innerHTML = `<p style="padding:10px; color:#64748b; font-style:italic;">No hay puntos preconfigurados. Pulse "Añadir Punto Específico" para incluir comprobaciones basadas en el proyecto.</p>`;
+  }
+}
+
+function agregarPuntoChequeoDOM(pos, texto, refNorma, estado = "P", obs = "") {
+  const cont = document.getElementById('contenedorChecklist');
+  const idx = itemsChecklistActual.length;
+
+  itemsChecklistActual.push({ pos, texto, refNorma, estado, obs });
+
+  const div = document.createElement('div');
+  div.className = "check-item";
+  div.id = `check_row_${idx}`;
+  div.innerHTML = `
+    <div>
+      <div style="font-weight:700; font-size:0.83rem; color:#0f2d59;">${pos} - ${texto}</div>
+      <div style="font-size:0.72rem; color:#64748b; margin-bottom:4px;">Ref: ${refNorma}</div>
+      <input type="text" placeholder="Observaciones / Medidas / Evidencia documental..." value="${obs}" onchange="itemsChecklistActual[${idx}].obs = this.value" style="width:100%; font-size:0.75rem;">
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
+      <div class="check-status-group">
+        <button class="status-btn ${estado==='C'?'selected-C':''}" onclick="setEstadoItem(${idx}, 'C')">C</button>
+        <button class="status-btn ${estado==='NC'?'selected-NC':''}" onclick="setEstadoItem(${idx}, 'NC')">NC</button>
+        <button class="status-btn ${estado==='NA'?'selected-NA':''}" onclick="setEstadoItem(${idx}, 'NA')">NA</button>
+        <button class="status-btn ${estado==='P'?'selected-P':''}" onclick="setEstadoItem(${idx}, 'P')">P</button>
+      </div>
+      <span style="font-size:0.68rem; color:#64748b;">(C: Cumple | NC: No Cumple | NA: No Aplica | P: Pendiente)</span>
+    </div>
+  `;
+  cont.appendChild(div);
+}
+
+function setEstadoItem(idx, nuevoEstado) {
+  if (itemsChecklistActual[idx]) {
+    itemsChecklistActual[idx].estado = nuevoEstado;
+    const row = document.getElementById(`check_row_${idx}`);
+    row.querySelectorAll('.status-btn').forEach(b => {
+      b.className = "status-btn";
+      if (b.innerText === nuevoEstado) b.classList.add(`selected-${nuevoEstado}`);
+    });
+  }
+}
+
+function agregarPuntoChequeoManual() {
+  const p = prompt("Código o posición del punto (ej. ART-XX):", "MAN-01");
+  if (!p) return;
+  const desc = prompt("Descripción del requisito a comprobar:", "Comprobación específica de campo");
+  if (!desc) return;
+  agregarPuntoChequeoDOM(p, desc, "Definido por Inspector Propio", "P", "");
+}
+
+/* ========================================================================= */
+/* EVIDENCIAS FOTOGRÁFICAS PERSISTENTES                                      */
+/* ========================================================================= */
+function mostrarOpcionesFotoEvidencia() {
+  if (confirm("Pulse ACEPTAR para usar la Cámara o CANCELAR para abrir la Galería de archivos.")) {
+    document.getElementById('camaraEvidencia').click();
+  } else {
+    document.getElementById('galeriaEvidencia').click();
+  }
+}
+
+function procesarFotoEvidencia(input) {
+  if (!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+    fotosEvidenciaMemoria.push({ name: file.name, dataUrl: e.target.result });
+    renderGaleriaMemoria();
+  };
+  reader.readAsDataURL(file);
+}
+
+function renderGaleriaMemoria() {
+  const gal = document.getElementById('galeriaFotosMemoria');
+  gal.innerHTML = '';
+  fotosEvidenciaMemoria.forEach((f, i) => {
+    const box = document.createElement('div');
+    box.style = "position:relative; width:90px; height:90px; border:1px solid #cbd5e1; border-radius:4px; overflow:hidden;";
+    box.innerHTML = `
+      <img src="${f.dataUrl}" style="width:100%; height:100%; object-fit:cover;">
+      <button onclick="fotosEvidenciaMemoria.splice(${i},1); renderGaleriaMemoria();" style="position:absolute; top:2px; right:2px; background:#dc2626; color:#fff; border:none; border-radius:50%; width:18px; height:18px; font-size:10px; cursor:pointer;">✕</button>
+    `;
+    gal.appendChild(box);
+  });
+}
+
+/* ========================================================================= */
+/* INFORMES, CORREO Y COMPARTIR                                              */
+/* ========================================================================= */
+function prepararEnvioCorreo() {
+  const titular = document.getElementById('insp_titular').value || "No indicado";
+  const exp = document.getElementById('insp_expediente').value || "S/EXP";
+  const almacen = document.getElementById('insp_almacen_nombre').value || "Almacén";
+  const itc = document.getElementById('insp_itc_sel').value;
+  const dictamen = document.getElementById('insp_dictamen_final').value || "Sin observaciones adicionales.";
+
+  let ncCount = 0;
+  let resumenChecklist = "";
+  itemsChecklistActual.forEach(it => {
+    if (it.estado === 'NC') ncCount++;
+    resumenChecklist += `• [${it.estado}] ${it.pos} ${it.texto}: ${it.obs || 'Sin obs'}\n`;
+  });
+
+  const subject = encodeURIComponent(`[INFORME APQ] ${itc} - ${almacen} (Exp: ${exp})`);
+  const body = encodeURIComponent(
+    `ACTA / REGISTRO DE INSPECCIÓN PROPIA APQ (RD 656/2017)\n\n` +
+    `• Titular: ${titular}\n` +
+    `• Expediente: ${exp}\n` +
+    `• Almacenamiento: ${almacen}\n` +
+    `• Instrucción Técnica: ${itc}\n` +
+    `• No Conformidades Detectadas: ${ncCount}\n\n` +
+    `DICTAMEN DEL INSPECTOR PROPIO:\n${dictamen}\n\n` +
+    `PUNTOS DE REVISIÓN:\n${resumenChecklist}\n`
+  );
+
+  window.location.href = `mailto:?subject=${subject}&body=${body}`;
+}
+
+async function compartirWebShare() {
+  const titular = document.getElementById('insp_titular').value || "Titular";
+  const exp = document.getElementById('insp_expediente').value || "S/EXP";
+  const itc = document.getElementById('insp_itc_sel').value;
+  const texto = `Informe de Revisión APQ - ${itc} - Exp: ${exp} - Titular: ${titular}`;
+
+  if (navigator.share) {
+    try {
+      let shareData = { title: "Informe Inspector Propio APQ", text: texto };
+      
+      if (fotosEvidenciaMemoria.length > 0 && navigator.canShare) {
+        const fileArray = [];
+        for (let i = 0; i < fotosEvidenciaMemoria.length; i++) {
+          const res = await fetch(fotosEvidenciaMemoria[i].dataUrl);
+          const blob = await res.blob();
+          fileArray.push(new File([blob], `evidencia_${i+1}.jpg`, { type: 'image/jpeg' }));
+        }
+        if (navigator.canShare({ files: fileArray })) {
+          shareData.files = fileArray;
+        }
+      }
+      await navigator.share(shareData);
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        alert("No fue posible compartir automáticamente. Utilice el botón de Imprimir/Guardar PDF.");
+      }
+    }
+  } else {
+    alert("La función Web Share no está disponible en este navegador. Utilice 'Imprimir / Exportar a PDF' para archivar el informe.");
+  }
+}
+
+/* ========================================================================= */
+/* OCR CLIENTE LOCAL CON TESSERACT.JS                                        */
+/* ========================================================================= */
+function abrirModalOCR() {
+  document.getElementById('modalOCR').style.display = 'flex';
+  document.getElementById('ocrProgreso').style.display = 'none';
+  document.getElementById('ocrTextoBruto').value = '';
+}
+function cerrarModalOCR() {
+  document.getElementById('modalOCR').style.display = 'none';
+}
+
+async function ejecutarOCRLocal(input) {
+  if (!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  const progBox = document.getElementById('ocrProgreso');
+  const progPct = document.getElementById('ocrPorcentaje');
+  
+  progBox.style.display = 'block';
+  progPct.innerText = 'Iniciando Worker local...';
+
+  try {
+    const worker = await Tesseract.createWorker('spa');
+    progPct.innerText = 'Analizando imagen en cliente...';
+
+    const ret = await worker.recognize(file);
+    await worker.terminate();
+
+    progBox.style.display = 'none';
+    const text = ret.data.text;
+    document.getElementById('ocrTextoBruto').value = text;
+    interpretarTextoEtiqueta(text);
+  } catch (err) {
+    progBox.style.display = 'none';
+    alert("Aviso OCR: No fue posible procesar la imagen localmente (" + err.message + "). Puede introducir los campos a mano.");
+  }
+}
+
+function interpretarTextoEtiqueta(txt) {
+  const lineas = txt.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+  if (lineas.length > 0) {
+    document.getElementById('ocr_prop_nombre').value = lineas[0].substring(0, 40);
+  }
+
+  const frases = txt.toUpperCase().match(/H\d{3}/g) || [];
+  const unicasH = [...new Set(frases)];
+  document.getElementById('ocr_prop_frasesH').value = unicasH.join(', ');
+
+  const matchVol = txt.match(/(\d+([\.,]\d+)?)\s*(L|kg|ml|g|Nm3)/i);
+  if (matchVol) {
+    let cant = parseFloat(matchVol[1].replace(',', '.'));
+    let un = matchVol[3].toUpperCase();
+    if (un === 'ML') { cant = cant / 1000; un = 'L'; }
+    if (un === 'G') { cant = cant / 1000; un = 'kg'; }
+    document.getElementById('ocr_prop_vol_envase').value = cant;
+    document.getElementById('ocr_prop_unidad').value = (un === 'NM3') ? 'Nm3' : un;
+  }
+  recalcularTotalOCR();
+}
+
+document.getElementById('ocr_prop_vol_envase').oninput = recalcularTotalOCR;
+document.getElementById('ocr_prop_num_envases').oninput = recalcularTotalOCR;
+
+function recalcularTotalOCR() {
+  const c = parseFloat(document.getElementById('ocr_prop_vol_envase').value) || 0;
+  const n = parseInt(document.getElementById('ocr_prop_num_envases').value) || 1;
+  const u = document.getElementById('ocr_prop_unidad').value;
+  document.getElementById('ocr_total_preview').innerText = `${(c * n).toFixed(2)} ${u}`;
+}
+
+function transferirProductoDesdeOCR() {
+  const nom = document.getElementById('ocr_prop_nombre').value || "Producto Escaneado";
+  const frases = document.getElementById('ocr_prop_frasesH').value;
+  const volEnv = parseFloat(document.getElementById('ocr_prop_vol_envase').value) || 0;
+  const numEnv = parseInt(document.getElementById('ocr_prop_num_envases').value) || 1;
+  const unid = document.getElementById('ocr_prop_unidad').value;
+  const total = volEnv * numEnv;
+
+  const nuevoItem = {
+    nombre: nom,
+    quimico: "FDS por comprobar",
+    cas: "",
+    itc: "auto",
+    grupo: "Físico",
+    frasesH: frases || "H225",
+    cantidad: total,
+    unidad: unid,
+    c5: 50,
+    c6: 1000
+  };
+
+  agregarFilaProducto(nuevoItem);
+  analizarFrasesHProd(listaProductos.length - 1, nuevoItem.frasesH);
+  cerrarModalOCR();
+  alert(`✅ Producto "${nom}" añadido con cantidad total de ${total} ${unid}.`);
+}
+
+/* ========================================================================= */
+/* INICIALIZACIÓN                                                            */
+/* ========================================================================= */
+window.onload = async function() {
+  document.getElementById('insp_fecha').value = new Date().toISOString().split('T')[0];
+  await initIndexedDB();
+  cambiarPlantillaITC('APQ-1');
+  
+  // Fila de ejemplo inicial
+  agregarFilaProducto({
+    nombre: "Ejemplo: Disolvente / Alcohol",
+    quimico: "Propan-2-ol (Isopropanol)",
+    cas: "67-63-0",
+    itc: "APQ-1",
+    grupo: "Físico",
+    frasesH: "H225, H319, H336",
+    cantidad: 120,
+    unidad: "L",
+    c5: 50,
+    c6: 1000
+  });
+};
+</script>
+</body>
+</html>
